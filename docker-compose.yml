@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+
+  gw_app:
+    container_name: gateway_app
+    build:
+      context: .
+      dockerfile: gateway.dockerfile
+    ports:
+      - "8080:8008"
+    #    volumes:
+    #      - ./messenger:/var/www/html
+    depends_on:
+      - auth_app
+      - msg_app
+
+  msg_app:
+    container_name: messenger_app
+    build:
+      context: .
+      dockerfile: msg.dockerfile
+    depends_on:
+      - auth_app
+      - msg_db
+
+  auth_app:
+    container_name: authenticator_app
+    build:
+      context: .
+      dockerfile: auth.dockerfile
+    depends_on:
+      - auth_db
+
+
+  auth_db:
+    image: mysql:8.0
+    container_name: authenticator_db
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: authen
+      MYSQL_USER: auth_user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3308:3306"
+
+  msg_db:
+    image: mysql:8.0
+    container_name: messenger_db
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: messages
+      MYSQL_USER: msg_user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3309:3306"
