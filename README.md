@@ -12,7 +12,7 @@ make run
 - Import the Postman Collection by the `gp.postman_collection.json` file.
 
 #### Stopping the Services
-
+- This will down all the services at once by executing `docker-compose down`
 ```makefile
 make down
 ```
